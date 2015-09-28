@@ -1,5 +1,9 @@
 package fr.sodifrance.hackatoncaf;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -7,16 +11,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import fr.sodifrance.hackatoncaf.model.Caf;
-import fr.sodifrance.hackatoncaf.repository.CafRepository;
-
 @SpringBootApplication
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "fr.sodifrance")
 public class HackatonApplication implements CommandLineRunner {
-
-	@Autowired
-	CafRepository repository;
 
 	public static void main(String[] args) throws Exception {
 
@@ -26,16 +24,28 @@ public class HackatonApplication implements CommandLineRunner {
 	}
 
 	public void run(String... strings) throws Exception {
+		
+		Class.forName("org.h2.Driver");
+		Connection conn = DriverManager.getConnection("jdbc:h2:~/test");
+		Statement stat = conn.createStatement();
 
-		repository.save(new Caf("1", "Ain", "82", "15853"));
-		repository.save(new Caf("2", "Aisne", "22", "15749"));
-		repository.save(new Caf("3", "Allier", "83", "7808"));
-		repository.save(new Caf("4", "Alpes-de-Haute-Provence", "93", "3702"));
-		repository.save(new Caf("5", "Hautes-Alpes", "93", "3407"));
-		repository.save(new Caf("6", "Alpes-Maritimes", "93", "25377"));
-		repository.save(new Caf("7", "Ard�che", "82", "7916"));
-		repository.save(new Caf("8", "Ardennes", "21", "7494"));
-
+		// foyers allocataires / nombre d’habitants de la commune
+		// Communes;Codes_Insee;NB_Allocataires;ALL_PAJE;ALL_PRIM;ALL_BASEP;ALL_CMG;ALL_CMG_ASMA;ALL_CMG_DOM;ALL_CMG_A;ALL_Clca_Colca
+		stat.execute("DROP TABLE IF EXISTS PAJE ");
+		stat.execute("CREATE TABLE IF NOT EXISTS PAJE "
+		        + " AS SELECT *"
+		        + " FROM CSVREAD('classpath:db/PAJECom2014.csv','charset=UTF-8 fieldSeparator=|')");
+		
+		// Bases de données des communes de l'INSEE avec le nombre d'habitants
+		stat.execute("DROP TABLE IF EXISTS INSEE ");
+		stat.execute("CREATE TABLE IF NOT EXISTS INSEE "
+		        + " AS SELECT *"
+		        + " FROM CSVREAD('classpath:db/base-ic-evol-struct-pop-2011.csv')");
+		
+		
+	
+		stat.close();
+		conn.close();
 	}
 
 }
