@@ -12,7 +12,7 @@ public class Commune {
 	
 	private String name;
 	
-	private String nb_allocataires;
+	private Integer nb_allocataires;
 
 	
 	
@@ -47,14 +47,14 @@ public class Commune {
 	/**
 	 * @return the nb_allocataires
 	 */
-	public String getNb_allocataires() {
+	public Integer getNb_allocataires() {
 		return nb_allocataires;
 	}
 
 	/**
 	 * @param nb_allocataires the nb_allocataires to set
 	 */
-	public void setNb_allocataires(String nb_allocataires) {
+	public void setNb_allocataires(Integer nb_allocataires) {
 		this.nb_allocataires = nb_allocataires;
 	}
 	

@@ -40,9 +40,8 @@ public class HackatonRestController {
 					commune.setCode_insee(test[1]);
 				}
 				if (test.length > 2) {
-					commune.setNb_allocataires(test[2]);
-				}
-				
+					commune.setNb_allocataires(getInteger(test[2]));
+				}				
 
 				communes.add(commune);
 			}
@@ -57,6 +56,17 @@ public class HackatonRestController {
 
 		return communes;
 
+	}
+	
+	private Integer getInteger(String s) {
+		if (s == null) {
+			return null;
+		}
+		try {
+			return Integer.parseInt(s);
+		} catch (Throwable e) {
+			return null;
+		}
 	}
 
 }
