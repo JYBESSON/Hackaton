@@ -5,7 +5,8 @@ var HackatonCAF = (function() {
                 "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAUCAYAAAC07qxWAAABTUlEQVQoU4XSPUhcURCG4edKlggmkohaGIhisNPGRhAkgqZKJaKxEmwECyN2IlhKRBQFLYOtRISAjZAIWmRLtU8RCw2CYuLPCq7BRe5dNqsXdz3VmeGd7zszZwK5U2ZawoBKCRkl/rpybcmlsRAJIq7WqnbvDSv9Xxhe5l1JWrPnQyBU6jbsYwzKVcxL+2ou8MKxDZX3lOJBhz+BBmeWlRcFe10E6p1b8bwo2C0VeOnId1WPWJ+EzUzpM2KoQDOL0lbNZMdTI2lBq9qY7i+M+uG3tizIO2989sXre2iPA3v6sZkDeWLdpGYdqiP4m2PjkujK/0xWps4z27ZURNFbpy414SAOUuaTQSNusGRWykTuKXnrbKZToxXXbvzUg61CYJ1yu9H2pDRivxAY5kPjDBJ3JxC35qnDCEx7VRwssSPjH1qKg/kG2h8DH9yPWxORTVRHy5mwAAAAAElFTkSuQmCC"]
   // URL du service utilisé pour retrouver la list des villes avec leur position, niveau etc
   // FIXME : changer cette URL quand le service sera implementé.
-  var SERVICE_URL = "/mock";
+  // retrait du '/' au début pour passer en relatif
+  var SERVICE_URL = "mock";
 
   // On utilise la localisation de la ville de Bourges pour centrer la carte de France.
   var bourgesLoc = {lat:47.081012, lng:  2.398782}; // Bourges
