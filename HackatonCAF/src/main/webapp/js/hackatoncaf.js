@@ -32,9 +32,11 @@ var HackatonCAF = (function() {
       type : "GET",
       dataType: "json",
       success: function(data, textStatus) {
-        for(var name in data) {
-          var city = data[name];
-          createMarker(map, city.loc, LEVELS[city.level])
+        for (var i = 0; i < data.length; i++) {
+          var commune = data[i], loc = commune.loc, nb_allocataires = commune.nb_allocataires;
+          if (loc && nb_allocataires) {
+            createMarker(map, commune.loc, commune.nb_allocataires < 100 ? LEVELS[0] : LEVELS[1])
+          }
         }
       },
       error: function(qXHR, textStatus, errorThrown) {

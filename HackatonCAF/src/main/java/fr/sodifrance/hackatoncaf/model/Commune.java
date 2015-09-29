@@ -14,7 +14,7 @@ public class Commune {
 	
 	private Integer nb_allocataires;
 
-	
+	private Loc loc;
 	
 	/**
 	 * @return the code_insee
@@ -58,6 +58,12 @@ public class Commune {
 		this.nb_allocataires = nb_allocataires;
 	}
 	
+	public void setLoc(Loc loc) {
+		this.loc = loc;
+	}
 	
+	public Loc getLoc() {
+		return loc;
+	}
 	
 }

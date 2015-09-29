@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -32,9 +31,9 @@ public class HackatonApplication implements CommandLineRunner {
 		// foyers allocataires / nombre d’habitants de la commune
 		// Communes;Codes_Insee;NB_Allocataires;ALL_PAJE;ALL_PRIM;ALL_BASEP;ALL_CMG;ALL_CMG_ASMA;ALL_CMG_DOM;ALL_CMG_A;ALL_Clca_Colca
 		stat.execute("DROP TABLE IF EXISTS PAJE ");
-		stat.execute("CREATE TABLE IF NOT EXISTS PAJE "
-		        + " AS SELECT *"
-		        + " FROM CSVREAD('classpath:db/PAJECom2014.csv','charset=UTF-8 fieldSeparator=|')");
+		stat.execute("CREATE TABLE PAJE (CODE_INSEE TEXT, NB_ALLOCATAIRES TEXT)"
+		        + " AS SELECT 'Codes_Insee', 'NB_Allocataires'"
+		        + " FROM CSVREAD('classpath:db/PAJECom2014.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=true')");
 		
 		// Bases de données des communes de l'INSEE avec le nombre d'habitants
 		stat.execute("DROP TABLE IF EXISTS INSEE ");
@@ -42,7 +41,13 @@ public class HackatonApplication implements CommandLineRunner {
 		        + " AS SELECT *"
 		        + " FROM CSVREAD('classpath:db/base-ic-evol-struct-pop-2011.csv')");
 		
-		
+		// Geolocalisation des communues
+		// EU_circo	code_rÃ©gion;nom;_rÃ©gionchef-lieu_rÃ©gion;numÃ©ro_dÃ©partement;nom_dÃ©partement;prÃ©fecture;numÃ©ro_circonscription;nom_commune;codes_postaux;code_insee;latitude;longitude;Ã©loignement
+		// voir https://www.data.gouv.fr/fr/datasets/listes-des-communes-geolocalisees-par-regions-departements-circonscriptions-nd/
+		stat.execute("DROP TABLE IF EXISTS COMMUNE ");
+		stat.execute("CREATE TABLE COMMUNE (CODE_INSEE TEXT, NOM TEXT, LATITUDE TEXT, LONGITUDE TEXT)"
+		        + " AS SELECT code_insee, nom_commune, latitude, longitude"
+		        + " FROM CSVREAD('classpath:db/eucircos_regions_departements_circonscriptions_communes_gps.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=true')");
 	
 		stat.close();
 		conn.close();
