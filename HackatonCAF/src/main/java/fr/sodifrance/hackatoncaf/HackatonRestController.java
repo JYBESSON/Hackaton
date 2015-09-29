@@ -38,11 +38,11 @@ public class HackatonRestController {
 			Double longitude = null;
 			while (res.next()) {
 
-				codeInsee = res.getString(1);
-				nbAllocataires = getInteger(res.getString(2));
-				latitude = getDouble(res.getString(3));
-				longitude = getDouble(res.getString(4));
-
+				codeInsee = res.getString(1);				
+				latitude = getDouble(res.getString(2));
+				longitude = getDouble(res.getString(3));
+				nbAllocataires = getInteger(res.getString(4));
+				
 				if (latitude != null && longitude != null) {
 					commune = new Commune();
 					commune.setCode_insee(codeInsee);
