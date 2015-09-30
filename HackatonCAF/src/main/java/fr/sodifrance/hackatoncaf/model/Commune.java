@@ -7,9 +7,9 @@ package fr.sodifrance.hackatoncaf.model;
  */
 public class Commune {
 	
-	private String codeInsee;
+	private String insee;
 	
-	private Integer nbAllocataires;
+	private Integer nbAllocs;
 	
 	private Integer score;
 
@@ -18,29 +18,29 @@ public class Commune {
 	/**
 	 * @return the code_insee
 	 */
-	public String getCodeInsee() {
-		return codeInsee;
+	public String getInsee() {
+		return insee;
 	}
 
 	/**
 	 * @param code_insee the code_insee to set
 	 */
-	public void setCodeInsee(String codeInsee) {
-		this.codeInsee = codeInsee;
+	public void setInsee(String insee) {
+		this.insee = insee;
 	}
 
 	/**
 	 * @return the nbAllocataires
 	 */
-	public Integer getNbAllocataires() {
-		return nbAllocataires;
+	public Integer getNbAllocs() {
+		return nbAllocs;
 	}
 
 	/**
-	 * @param nbAllocataires the nbAllocataires to set
+	 * @param nbAllocs the nbAllocataires to set
 	 */
-	public void setNbAllocataires(Integer nbAllocataires) {
-		this.nbAllocataires = nbAllocataires;
+	public void setNbAllocs(Integer nbAllocs) {
+		this.nbAllocs = nbAllocs;
 	}
 	
 	public void setLoc(Loc loc) {

@@ -1,14 +1,19 @@
 package fr.sodifrance.hackatoncaf;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,59 +24,57 @@ import fr.sodifrance.hackatoncaf.model.Loc;
 @RestController
 public class HackatonRestController {
 
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+
 	@RequestMapping(value = "/communes", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Commune> test(@RequestParam(value = "annee", required = false) Integer annee) {
-
-		if (annee == null) {
-			annee = 2014;
-		}
-
-		List<Commune> communes = new ArrayList<Commune>();
-		Commune commune;
-		ResultSet res = null;
-		try {
-			Class.forName("org.h2.Driver");
-			Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
-
-			Statement stat = conn.createStatement();
-			res = stat.executeQuery(
-					"SELECT C.CODE_INSEE, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES FROM COMMUNE AS C INNER JOIN PAJE AS P ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = "
-							+ annee + ") ");
-
-			String codeInsee = null;
-			Integer nbAllocataires = null;
-			Double latitude = null;
-			Double longitude = null;
-			while (res.next()) {
-
-				codeInsee = res.getString(1);
-				latitude = getDouble(res.getString(2));
-				longitude = getDouble(res.getString(3));
-				nbAllocataires = getInteger(res.getString(4));
-
+		final int anneeFilter = annee != null ? annee : 2014;
+		List<Commune> communes = jdbcTemplate.query(new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection
+						.prepareStatement("SELECT C.CODE_INSEE, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES "
+								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P "
+								+ "ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = ?)", new String[] { "annee" });
+				ps.setInt(1, anneeFilter);
+				return ps;
+			}
+		}, new MyRowMapperResultSetExtractor<Commune>(new RowMapper<Commune>() {
+			@Override
+			public Commune mapRow(ResultSet rs, int rowNum) throws SQLException {
+				String codeInsee = rs.getString(1);
+				Double latitude = getDouble(rs, 2);
+				Double longitude = getDouble(rs, 3);
+				Integer nbAllocataires = getInteger(rs, 4);
 				if (latitude != null && longitude != null) {
-					commune = new Commune();
-					commune.setCodeInsee(codeInsee);
+					Commune commune = new Commune();
+					commune.setInsee(codeInsee);
 					commune.setLoc(new Loc(latitude, longitude));
-					commune.setNbAllocataires(nbAllocataires);
+					commune.setNbAllocs(nbAllocataires);
 					commune.setScore(computeScore(nbAllocataires));
-					communes.add(commune);
+					return commune;
+				}
+				// la commune n'a pas de geolocalisation, on retourne null
+				return null;
+			}
+
+			private Double getDouble(ResultSet rs, int i) {
+				try {
+					return rs.getDouble(i);
+				} catch (SQLException e) {
+					return null;
 				}
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (res != null) {
+			private Integer getInteger(ResultSet rs, int i) {
 				try {
-					res.close();
+					return rs.getInt(i);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					return null;
 				}
 			}
-		}
+
+		}));
 
 		return communes;
 
@@ -92,25 +95,53 @@ public class HackatonRestController {
 		return -1;
 	}
 
-	private Integer getInteger(String s) {
-		if (s == null) {
-			return null;
+	private class MyRowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
+
+		private final RowMapper<T> rowMapper;
+
+		private final int rowsExpected;
+
+		/**
+		 * Create a new RowMapperResultSetExtractor.
+		 * 
+		 * @param rowMapper
+		 *            the RowMapper which creates an object for each row
+		 */
+		public MyRowMapperResultSetExtractor(RowMapper<T> rowMapper) {
+			this(rowMapper, 0);
 		}
-		try {
-			return Integer.parseInt(s);
-		} catch (Throwable e) {
-			return null;
+
+		/**
+		 * Create a new RowMapperResultSetExtractor.
+		 * 
+		 * @param rowMapper
+		 *            the RowMapper which creates an object for each row
+		 * @param rowsExpected
+		 *            the number of expected rows (just used for optimized
+		 *            collection handling)
+		 */
+		public MyRowMapperResultSetExtractor(RowMapper<T> rowMapper, int rowsExpected) {
+			Assert.notNull(rowMapper, "RowMapper is required");
+			this.rowMapper = rowMapper;
+			this.rowsExpected = rowsExpected;
 		}
+
+		@Override
+		public List<T> extractData(ResultSet rs) throws SQLException {
+			List<T> results = (this.rowsExpected > 0 ? new ArrayList<T>(this.rowsExpected) : new ArrayList<T>());
+			int rowNum = 0;
+			while (rs.next()) {
+				T data = this.rowMapper.mapRow(rs, rowNum++);
+				// Ici on teste si la commune n'est pas nulle pour l'ajouter a
+				// la
+				// liste.
+				if (data != null) {
+					results.add(data);
+				}
+			}
+			return results;
+		}
+
 	}
 
-	private Double getDouble(String s) {
-		if (s == null) {
-			return null;
-		}
-		try {
-			return Double.parseDouble(s);
-		} catch (Throwable e) {
-			return null;
-		}
-	}
 }
