@@ -28,7 +28,11 @@ public class HackatonRestController {
 	JdbcTemplate jdbcTemplate;
 
 	@RequestMapping(value = "/communes", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Commune> test(@RequestParam(value = "annee", required = false) Integer annee) {
+	public List<Commune> test(@RequestParam(value = "annee", required = false) Integer annee,
+			@RequestParam(value = "from", required = false) Integer from,
+			@RequestParam(value = "to", required = false) Integer to) {
+
+		CommuneMapper mapper = new CommuneMapper();
 		final int anneeFilter = annee != null ? annee : 2014;
 		List<Commune> communes = jdbcTemplate.query(new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -39,45 +43,41 @@ public class HackatonRestController {
 				ps.setInt(1, anneeFilter);
 				return ps;
 			}
-		}, new MyRowMapperResultSetExtractor<Commune>(new RowMapper<Commune>() {
-			@Override
-			public Commune mapRow(ResultSet rs, int rowNum) throws SQLException {
-				String codeInsee = rs.getString(1);
-				Double latitude = getDouble(rs, 2);
-				Double longitude = getDouble(rs, 3);
-				Integer nbAllocataires = getInteger(rs, 4);
-				if (latitude != null && longitude != null) {
-					Commune commune = new Commune();
-					commune.setInsee(codeInsee);
-					commune.setLoc(new Loc(latitude, longitude));
-					commune.setNbAllocs(nbAllocataires);
-					commune.setScore(computeScore(nbAllocataires));
-					return commune;
-				}
-				// la commune n'a pas de geolocalisation, on retourne null
-				return null;
+		}, new MyRowMapperResultSetExtractor<Commune>(mapper));
+
+		// Reparcours des communes pour mettre a jour le score + supprimer les
+		// communes qui n'ont pas un score compris entre from et to.
+		Integer maxScore = mapper.getMaxScore();
+		if (maxScore == null) {
+			return communes;
+		}
+		float max = (float) maxScore;
+		List<Commune> filteredCommunes = new ArrayList<Commune>();
+		Integer score = null;
+		for (Commune commune : communes) {
+			// Mise a jour du score de la commune par rapport au score max.
+			score = commune.getScore();
+			score = (int) (((float) score) / max * 100);
+			commune.setScore(score);
+			// test si le score de la commune est compris entre from et to
+			if (isInRange(score, from, to)) {
+				filteredCommunes.add(commune);
 			}
+		}
+		return filteredCommunes;
+	}
 
-			private Double getDouble(ResultSet rs, int i) {
-				try {
-					return rs.getDouble(i);
-				} catch (SQLException e) {
-					return null;
-				}
-			}
-
-			private Integer getInteger(ResultSet rs, int i) {
-				try {
-					return rs.getInt(i);
-				} catch (SQLException e) {
-					return null;
-				}
-			}
-
-		}));
-
-		return communes;
-
+	private boolean isInRange(Integer score, Integer from, Integer to) {
+		if (score == null) {
+			return false;
+		}
+		if (from != null && score < from) {
+			return false;
+		}
+		if (to != null && score > to) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -94,6 +94,54 @@ public class HackatonRestController {
 		}
 		return -1;
 	}
+
+	private class CommuneMapper implements RowMapper<Commune> {
+
+		private Integer maxScore;
+
+		@Override
+		public Commune mapRow(ResultSet rs, int rowNum) throws SQLException {
+			String codeInsee = rs.getString(1);
+			Double latitude = getDouble(rs, 2);
+			Double longitude = getDouble(rs, 3);
+			Integer nbAllocataires = getInteger(rs, 4);
+			Integer score = computeScore(nbAllocataires);
+			if (latitude != null && longitude != null && score != null) {
+				Commune commune = new Commune();
+				commune.setInsee(codeInsee);
+				commune.setLoc(new Loc(latitude, longitude));
+				commune.setNbAllocs(nbAllocataires);
+				commune.setScore(score);
+				if (maxScore == null || maxScore < score) {
+					maxScore = score;
+				}
+				return commune;
+			}
+			// la commune n'a pas de geolocalisation, on retourne null
+			return null;
+		}
+
+		public Integer getMaxScore() {
+			return maxScore;
+		}
+
+		private Double getDouble(ResultSet rs, int i) {
+			try {
+				return rs.getDouble(i);
+			} catch (SQLException e) {
+				return null;
+			}
+		}
+
+		private Integer getInteger(ResultSet rs, int i) {
+			try {
+				return rs.getInt(i);
+			} catch (SQLException e) {
+				return null;
+			}
+		}
+
+	};
 
 	private class MyRowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
 
