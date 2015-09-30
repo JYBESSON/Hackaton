@@ -31,9 +31,14 @@ public class HackatonApplication implements CommandLineRunner {
 		// foyers allocataires / nombre d’habitants de la commune
 		// Communes;Codes_Insee;NB_Allocataires;ALL_PAJE;ALL_PRIM;ALL_BASEP;ALL_CMG;ALL_CMG_ASMA;ALL_CMG_DOM;ALL_CMG_A;ALL_Clca_Colca
 		stat.execute("DROP TABLE IF EXISTS PAJE");
-		stat.execute("CREATE TABLE IF NOT EXISTS PAJE (CODE_INSEE VARCHAR(20), NB_ALLOCATAIRES VARCHAR(20))"
-		        + " AS SELECT \"'Codes_Insee'\", \"'NB_Allocataires'\""
-		        + " FROM CSVREAD('classpath:db/PAJECom2014.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')");
+		stat.execute("CREATE TABLE IF NOT EXISTS PAJE (CODE_INSEE VARCHAR(20), NB_ALLOCATAIRES VARCHAR(20), ANNEE NUMBER)"
+		        + " AS ("
+		        + " SELECT Codes_Insee, NB_Allocataires, 2013"
+		        + " FROM CSVREAD('classpath:db/PAJECom2013.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+		        + " UNION "
+		        + " SELECT Codes_Insee, NB_Allocataires, 2014"
+		        + " FROM CSVREAD('classpath:db/PAJECom2014.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"		        
+		        + ")");
 		stat.execute("CREATE INDEX ON PAJE(CODE_INSEE) ");
 		
 		// Geolocalisation des communues
