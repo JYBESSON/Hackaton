@@ -38,16 +38,17 @@ public class HackatonRestController {
 			Double longitude = null;
 			while (res.next()) {
 
-				codeInsee = res.getString(1);				
+				codeInsee = res.getString(1);
 				latitude = getDouble(res.getString(2));
 				longitude = getDouble(res.getString(3));
 				nbAllocataires = getInteger(res.getString(4));
-				
+
 				if (latitude != null && longitude != null) {
 					commune = new Commune();
-					commune.setCode_insee(codeInsee);
+					commune.setCodeInsee(codeInsee);
 					commune.setLoc(new Loc(latitude, longitude));
-					commune.setNb_allocataires(nbAllocataires);
+					commune.setNbAllocataires(nbAllocataires);
+					commune.setScore(computeScore(nbAllocataires));
 					communes.add(commune);
 				}
 			}
@@ -68,6 +69,21 @@ public class HackatonRestController {
 
 		return communes;
 
+	}
+
+	/**
+	 * Calcul du score d'uen commune en fonction du son nombre allocataires, sa
+	 * population, etc
+	 * 
+	 * @param nbAllocataires
+	 * @return
+	 */
+	private Integer computeScore(Integer nbAllocataires) {
+		// TODO: effectuer ce calcul.
+		if (nbAllocataires != null) {
+			return nbAllocataires;
+		}
+		return -1;
 	}
 
 	private Integer getInteger(String s) {

@@ -6,56 +6,41 @@ package fr.sodifrance.hackatoncaf.model;
  *
  */
 public class Commune {
-
 	
-	private String code_insee;
+	private String codeInsee;
 	
-	private String name;
+	private Integer nbAllocataires;
 	
-	private Integer nb_allocataires;
+	private Integer score;
 
 	private Loc loc;
 	
 	/**
 	 * @return the code_insee
 	 */
-	public String getCode_insee() {
-		return code_insee;
+	public String getCodeInsee() {
+		return codeInsee;
 	}
 
 	/**
 	 * @param code_insee the code_insee to set
 	 */
-	public void setCode_insee(String code_insee) {
-		this.code_insee = code_insee;
+	public void setCodeInsee(String codeInsee) {
+		this.codeInsee = codeInsee;
 	}
 
 	/**
-	 * @return the name
+	 * @return the nbAllocataires
 	 */
-	public String getName() {
-		return name;
+	public Integer getNbAllocataires() {
+		return nbAllocataires;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param nbAllocataires the nbAllocataires to set
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the nb_allocataires
-	 */
-	public Integer getNb_allocataires() {
-		return nb_allocataires;
-	}
-
-	/**
-	 * @param nb_allocataires the nb_allocataires to set
-	 */
-	public void setNb_allocataires(Integer nb_allocataires) {
-		this.nb_allocataires = nb_allocataires;
+	public void setNbAllocataires(Integer nbAllocataires) {
+		this.nbAllocataires = nbAllocataires;
 	}
 	
 	public void setLoc(Loc loc) {
@@ -64,6 +49,14 @@ public class Commune {
 	
 	public Loc getLoc() {
 		return loc;
+	}
+	
+	public void setScore(Integer score) {
+		this.score = score;
+	}
+	
+	public Integer getScore() {
+		return score;
 	}
 	
 }

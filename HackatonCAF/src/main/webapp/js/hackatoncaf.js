@@ -6,7 +6,7 @@ var HackatonCAF = (function() {
   // URL du service utilisé pour retrouver la list des villes avec leur position, niveau etc
   // FIXME : changer cette URL quand le service sera implementé.
   // retrait du '/' au début pour passer en relatif
-  var SERVICE_URL = "mock";
+  var SERVICE_URL = "communes";
 
   // On utilise la localisation de la ville de Bourges pour centrer la carte de France.
   var bourgesLoc = {lat:47.081012, lng:  2.398782}; // Bourges
@@ -33,9 +33,9 @@ var HackatonCAF = (function() {
       dataType: "json",
       success: function(data, textStatus) {
         for (var i = 0; i < data.length; i++) {
-          var commune = data[i], loc = commune.loc, nb_allocataires = commune.nb_allocataires;
-          if (loc && nb_allocataires) {
-            createMarker(map, commune.loc, commune.nb_allocataires < 100 ? LEVELS[0] : LEVELS[1])
+          var commune = data[i], loc = commune.loc, score = commune.score;
+          if (loc && score) {
+            createMarker(map, loc, score < 100 ? LEVELS[0] : LEVELS[1])
           }
         }
       },
