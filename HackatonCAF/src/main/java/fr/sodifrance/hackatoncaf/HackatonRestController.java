@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.sodifrance.hackatoncaf.model.Commune;
@@ -19,7 +20,11 @@ import fr.sodifrance.hackatoncaf.model.Loc;
 public class HackatonRestController {
 
 	@RequestMapping(value = "/communes", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Commune> test() {
+	public List<Commune> test(@RequestParam(value = "annee", required = false) Integer annee) {
+
+		if (annee == null) {
+			annee = 2014;
+		}
 
 		List<Commune> communes = new ArrayList<Commune>();
 		Commune commune;
@@ -30,7 +35,8 @@ public class HackatonRestController {
 
 			Statement stat = conn.createStatement();
 			res = stat.executeQuery(
-					"SELECT C.CODE_INSEE, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES FROM COMMUNE AS C INNER JOIN PAJE AS P ON (C.CODE_INSEE = P.CODE_INSEE) ");
+					"SELECT C.CODE_INSEE, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES FROM COMMUNE AS C INNER JOIN PAJE AS P ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = "
+							+ annee + ") ");
 
 			String codeInsee = null;
 			Integer nbAllocataires = null;
@@ -38,16 +44,17 @@ public class HackatonRestController {
 			Double longitude = null;
 			while (res.next()) {
 
-				codeInsee = res.getString(1);				
+				codeInsee = res.getString(1);
 				latitude = getDouble(res.getString(2));
 				longitude = getDouble(res.getString(3));
 				nbAllocataires = getInteger(res.getString(4));
-				
+
 				if (latitude != null && longitude != null) {
 					commune = new Commune();
-					commune.setCode_insee(codeInsee);
+					commune.setCodeInsee(codeInsee);
 					commune.setLoc(new Loc(latitude, longitude));
-					commune.setNb_allocataires(nbAllocataires);
+					commune.setNbAllocataires(nbAllocataires);
+					commune.setScore(computeScore(nbAllocataires));
 					communes.add(commune);
 				}
 			}
@@ -68,6 +75,21 @@ public class HackatonRestController {
 
 		return communes;
 
+	}
+
+	/**
+	 * Calcul du score d'uen commune en fonction du son nombre allocataires, sa
+	 * population, etc
+	 * 
+	 * @param nbAllocataires
+	 * @return
+	 */
+	private Integer computeScore(Integer nbAllocataires) {
+		// TODO: effectuer ce calcul.
+		if (nbAllocataires != null) {
+			return nbAllocataires;
+		}
+		return -1;
 	}
 
 	private Integer getInteger(String s) {
