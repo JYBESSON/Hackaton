@@ -26,7 +26,7 @@ public class HackatonRestController {
 		ResultSet res = null;
 		try {
 			Class.forName("org.h2.Driver");
-			Connection conn = DriverManager.getConnection("jdbc:h2:~/test");
+			Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
 
 			Statement stat = conn.createStatement();
 			res = stat.executeQuery(

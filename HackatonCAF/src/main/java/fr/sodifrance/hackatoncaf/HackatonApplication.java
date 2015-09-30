@@ -25,7 +25,7 @@ public class HackatonApplication implements CommandLineRunner {
 	public void run(String... strings) throws Exception {
 		
 		Class.forName("org.h2.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:h2:~/test");
+		Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
 		Statement stat = conn.createStatement();
 
 		// foyers allocataires / nombre d’habitants de la commune
