@@ -25,7 +25,8 @@ public class HackatonApplication implements CommandLineRunner {
 	public void run(String... strings) throws Exception {
 		
 		Class.forName("org.h2.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:h2:mem:test");
+		//http://stackoverflow.com/questions/5763747/h2-in-memory-database-table-not-found
+		Connection conn = DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
 		Statement stat = conn.createStatement();
 
 		// foyers allocataires / nombre d’habitants de la commune
