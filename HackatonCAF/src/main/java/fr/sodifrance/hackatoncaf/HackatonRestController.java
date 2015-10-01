@@ -45,9 +45,13 @@ public class HackatonRestController {
 		List<Commune> communes = jdbcTemplate.query(new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				PreparedStatement ps = connection
-						.prepareStatement("SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES "
+						.prepareStatement("SELECT CODE_INSEE, NOM, LATITUDE, LONGITUDE, NB_ALLOCATAIRES "
+								+ "FROM SNAPSHOT WHERE ANNEE = ?");
+						// Decommenter ici, si on ne veut pa sutiliser SNAPSHOT
+						/*.prepareStatement("SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES "
 								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P "
 								+ "ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = ?)");
+						*/
 				ps.setInt(1, anneeFilter);
 				return ps;
 			}
@@ -95,9 +99,13 @@ public class HackatonRestController {
 		CommuneDetail commune = jdbcTemplate.query(new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				PreparedStatement ps = connection
-						.prepareStatement("SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES "
+						.prepareStatement("SELECT CODE_INSEE, NOM, LATITUDE, LONGITUDE, NB_ALLOCATAIRES "
+								+ "FROM SNAPSHOT WHERE LATITUDE = ? AND LONGITUDE = ? AND ANNEE = ?");
+						// Decommenter ici, si on ne veut pa sutiliser SNAPSHOT
+						/*.prepareStatement("SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES "
 								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P " + "ON (C.CODE_INSEE = P.CODE_INSEE "
 								+ "AND C.LATITUDE = ? AND C.LONGITUDE = ? AND P.ANNEE = ?)");
+								*/
 				ps.setString(1, lat);
 				ps.setString(2, lng);
 				ps.setInt(3, annee);

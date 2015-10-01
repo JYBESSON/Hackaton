@@ -34,7 +34,7 @@ public class HackatonApplication implements CommandLineRunner {
 						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2014"
 						+ " FROM CSVREAD('classpath:db/PAJECom2014.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
 						+ ")");
-		jdbcTemplate.execute("CREATE INDEX ON PAJE(CODE_INSEE) ");
+		jdbcTemplate.execute("CREATE INDEX ON PAJE(CODE_INSEE, ANNEE) ");
 
 		// Geolocalisation des communues
 		// EU_circo
@@ -43,15 +43,25 @@ public class HackatonApplication implements CommandLineRunner {
 		// https://www.data.gouv.fr/fr/datasets/listes-des-communes-geolocalisees-par-regions-departements-circonscriptions-nd/
 		jdbcTemplate.execute("DROP TABLE IF EXISTS COMMUNE ");
 		jdbcTemplate.execute(
-				"CREATE TABLE IF NOT EXISTS COMMUNE (CODE_INSEE VARCHAR(20), NOM TEXT, LATITUDE VARCHAR, LONGITUDE VARCHAR)"
+				"CREATE TABLE IF NOT EXISTS COMMUNE (CODE_INSEE VARCHAR(20), NOM VARCHAR(100), LATITUDE VARCHAR, LONGITUDE VARCHAR)"
 						+ " AS SELECT code_insee, nom_commune, latitude, longitude"
 						+ " FROM CSVREAD('classpath:db/eucircos_regions_departements_circonscriptions_communes_gps.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')");
-		jdbcTemplate.execute("CREATE INDEX ON COMMUNE(CODE_INSEE) ");
-
+		jdbcTemplate.execute("CREATE INDEX ON COMMUNE(CODE_INSEE) ");		
+		
 		// Bases de donnÃ©es des communes de l'INSEE avec le nombre d'habitants
 		jdbcTemplate.execute("DROP TABLE IF EXISTS INSEE ");
 		jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS INSEE " + " AS SELECT *"
 				+ " FROM CSVREAD('classpath:db/base-ic-evol-struct-pop-2011.csv')");
+		
+		jdbcTemplate.execute("DROP TABLE IF EXISTS SNAPSHOT ");
+		jdbcTemplate.execute(
+				"CREATE TABLE IF NOT EXISTS SNAPSHOT (CODE_INSEE VARCHAR(20), NOM VARCHAR(100), LATITUDE VARCHAR, LONGITUDE VARCHAR, NB_ALLOCATAIRES VARCHAR(20), ANNEE NUMBER)"
+						+ " AS (SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES, P.ANNEE "
+								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P "
+								+ "ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = 2013)"
+								+ "UNION SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES, P.ANNEE "
+								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P "
+								+ "ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = 2014))");
 	}
 
 }

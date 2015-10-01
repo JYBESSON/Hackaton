@@ -38,7 +38,7 @@ public abstract class AbstractCommuneFactory<T extends Commune> implements RowMa
 		Double longitude = getDouble(rs, 4);
 		Integer nbAllocataires = getInteger(rs, 5);
 		Integer score = HackatonRestController.computeScore(nbAllocataires);
-		if (latitude != null && longitude != null && score != null) {
+		if (latitude != null && latitude != 0 && longitude != null && longitude != 0 && score != null) {
 			T commune = create(insee, name, nbAllocataires);
 			commune.setLoc(new Loc(latitude, longitude));
 			commune.setScore(score);
