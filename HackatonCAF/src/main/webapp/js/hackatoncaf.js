@@ -58,7 +58,7 @@
       success: function(data, textStatus) {
         for (var i = 0; i < data.length; i++) {
           var commune = data[i], loc = commune.loc, score = commune.score;
-          addMarker(map, loc, LEVELS[getLevel(score)]);
+          addMarker(map, loc, score);
         }
       },
       error: function(qXHR, textStatus, errorThrown) {
@@ -120,7 +120,8 @@
   /**
    * Creation d'un marker sur la carte a la position donnée en utilisant l'icone donné.
    */
-  function addMarker(map, position, icon) {
+  function addMarker(map, position, score) {
+    var icon = LEVELS[getLevel(score)];
     var marker = new google.maps.Marker({
         position: position,
         map: map,
@@ -128,14 +129,50 @@
     });
     markers.push(marker);
     google.maps.event.addListener(marker, 'click', function() {
-      drawChart(this);
+      openInfo(this, position, score);
     }); 
+  }
+  
+  function openInfo(marker, position, score) {
+    // Set chart options
+    var options = {'title':'Score',
+                 'width':400,
+                 'height':150};
+                 
+    var node        = document.createElement('div'),
+      infoWindow  = new google.maps.InfoWindow();     
+      infoWindow.setContent(node);
+      infoWindow.open(marker.getMap(),marker);
+      
+    // Appel du service pour recuperer le detail de la commune
+    var url = "commune" + "?annee=" + year + "&lat=" + position.lat + "&lng=" + position.lng;
+    $.ajax({
+      url : url,
+      type : "GET",
+      dataType: "json",
+      success: function(data, textStatus) {
+        var s = "<p>Score de la commune de <b>";
+        s += data.name;
+        s += "</b>: <b>";
+        s += score;
+        s += "</b> / 100.<ul>";
+        s += "<li>Nombre allocataires: <b>";
+        s += data.nbAllocs;
+        s += "</b></li>";
+        s += "</ul>";
+        s += "</p>";
+        node.innerHTML = s;
+      },
+      error: function(qXHR, textStatus, errorThrown) {
+        alert(errorThrown)
+      }
+      });      
   }
 
   /**
    * Creation d'un graphique.
    */
-  function drawChart(marker) {
+  /*function drawChart(marker) {
 
     // Create the data table.
     var data = new google.visualization.DataTable();
@@ -161,9 +198,9 @@
       chart.draw(data, options);
       infoWindow.setContent(node);
       infoWindow.open(marker.getMap(),marker);
-  }
+  }*/
 
   // Chargement de la librarie Charts de Google.
-  google.load('visualization', '1.0', {'packages':['corechart']});
+  //google.load('visualization', '1.0', {'packages':['corechart']});
   google.maps.event.addDomListener(window, 'load', initMap);
 }());
