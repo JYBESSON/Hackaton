@@ -19,6 +19,9 @@
   // On utilise la localisation de la ville de Bourges pour centrer la carte de France.
   var bourgesLoc = {lat:47.081012, lng:  2.398782}; // Bourges
 
+  // Popup de detail d'une commune partagée pour toutes les communes.
+  var infoWindow  = new google.maps.InfoWindow();
+  
   /**
    * Initialisation de la carte.
    */
@@ -125,25 +128,17 @@
     var marker = new google.maps.Marker({
         position: position,
         map: map,
-        icon: icon
+        icon: icon,
+        title: "Score: " + score
     });
     markers.push(marker);
     google.maps.event.addListener(marker, 'click', function() {
       openInfo(this, position, score);
     }); 
   }
+
   
-  function openInfo(marker, position, score) {
-    // Set chart options
-    var options = {'title':'Score',
-                 'width':400,
-                 'height':150};
-                 
-    var node        = document.createElement('div'),
-      infoWindow  = new google.maps.InfoWindow();     
-      infoWindow.setContent(node);
-      infoWindow.open(marker.getMap(),marker);
-      
+  function openInfo(marker, position, score) {    
     // Appel du service pour recuperer le detail de la commune
     var url = "commune" + "?annee=" + year + "&lat=" + position.lat + "&lng=" + position.lng;
     $.ajax({
@@ -161,7 +156,9 @@
         s += "</b></li>";
         s += "</ul>";
         s += "</p>";
-        node.innerHTML = s;
+     
+        infoWindow.setContent(s);
+        infoWindow.open(marker.getMap(), marker);
       },
       error: function(qXHR, textStatus, errorThrown) {
         alert(errorThrown)
