@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="js/jquery-ui-1.11.4/jquery-ui.min.css" ></link>
     <link rel="stylesheet" href="styles/hackatoncaf.css" ></link>
     <script src="https://www.google.com/jsapi?.js"></script>    
-    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script src="http://maps.google.com/maps/api/js?sensor=false&libraries=places"></script>
     <script src="js/jquery-1.11.3.js" ></script>
     <script src="js/jquery-ui-1.11.4/jquery-ui.min.js" ></script>
     <script src="js/hackatoncaf.js" ></script>
@@ -15,6 +15,7 @@
   <body>
     <div id="map"></div>
     <div id="map-controls">
+      <input id="pac-input" class="controls" type="text" placeholder="Saisissez votre commune...">
 	  <ul id="year-control">
         <li class="selected" >2014</li>        
         <li>2013</li>      
@@ -23,7 +24,7 @@
       <div style="width: 100px; margin-left:15px;">
   		<span>Score: </span>
   		<span id="score-range" style="border:0; color:#f6931f; font-weight:bold;"></span>
-	  </div>               
+	  </div>      	 
     </div>
   </body>
 </html>

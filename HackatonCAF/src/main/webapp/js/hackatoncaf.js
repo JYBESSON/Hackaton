@@ -38,6 +38,7 @@
     // Ajout des controles annee + slider score
     addYearControl(map);
     addSliderScoreControl(map);
+    addSearchBoxControl(map);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("map-controls"));
     // Affichage des markers
     displayMarkers();
@@ -81,6 +82,45 @@
     if (score <= 80) return 2;
     if (score <= 90) return 1;
     return 0;
+  }
+  
+  /**
+   * Ajout du controle de recherche de commune.
+   * @see https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
+   */
+  function addSearchBoxControl(map) {
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+    
+    // [START region_getplaces]
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+  
+      if (places.length == 0) {
+          return;
+      }
+      
+      // For each place, get the icon, name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {      
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
+    // [END region_getplaces]
   }
   
   /**
