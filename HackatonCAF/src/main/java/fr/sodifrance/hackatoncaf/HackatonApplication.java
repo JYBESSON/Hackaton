@@ -33,6 +33,14 @@ public class HackatonApplication implements CommandLineRunner {
 						+ " FROM CSVREAD('classpath:db/PAJECom2013.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
 						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2014"
 						+ " FROM CSVREAD('classpath:db/PAJECom2014.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2012"
+						+ " FROM CSVREAD('classpath:db/PAJECom2012.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2011"
+						+ " FROM CSVREAD('classpath:db/PAJECom2011.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2010"
+						+ " FROM CSVREAD('classpath:db/PAJECom2010.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2009"
+						+ " FROM CSVREAD('classpath:db/PAJECom2009.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
 						+ ")");
 		jdbcTemplate.execute("CREATE INDEX ON PAJE(CODE_INSEE, ANNEE) ");
 
