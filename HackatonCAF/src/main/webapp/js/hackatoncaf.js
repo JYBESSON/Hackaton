@@ -14,6 +14,7 @@
   
   // URL du service utilisé pour retrouver la list des villes avec leur position, niveau etc
   var SERVICE_URL = "communes";
+  var censusMin = -10, censusMax = 10;
   var year = "2014", map, markers = [];
   
   // On utilise la localisation de la ville de Bourges pour centrer la carte de France.
@@ -21,7 +22,24 @@
 
   // Popup de detail d'une commune partagée pour toutes les communes.
   var infoWindow  = new google.maps.InfoWindow();
-  
+  //style de la map
+  var mapStyle = [{
+	    'featureType': 'all',
+	    'elementType': 'all',
+	    'stylers': [{'visibility': 'off'}]
+	}, {
+	    'featureType': 'landscape',
+	    'elementType': 'geometry',
+	    'stylers': [{'visibility': 'on'}, {'color': '#fcfcfc'}]
+	}, {
+	    'featureType': 'water',
+	    'elementType': 'labels',
+	    'stylers': [{'visibility': 'off'}]
+	}, {
+	    'featureType': 'water',
+	    'elementType': 'geometry',
+	    'stylers': [{'visibility': 'on'}, {'hue': '#5f94ff'}, {'lightness': 60}]
+	}];
   /**
    * Initialisation de la carte.
    */
@@ -32,10 +50,17 @@
       center: bourgesLoc,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       panControl: false, 
-      mapTypeControl: false, 
+      mapTypeControl: false,
       streetViewControl: true
+    //  styles: mapStyle
     });
     // Ajout des controles annee + slider score
+    map.data.loadGeoJson('js/TEST_COM.json',{ idPropertyName: 'INSEE_COM' });
+    //styling features
+    map.data.setStyle(styleFeature);
+    map.data.addListener('mouseover', mouseInToRegion);
+   // map.data.addListener('mouseout', mouseOutOfRegion);
+    
     addYearControl(map);
     addSliderScoreControl(map);
     addSearchBoxControl(map);
@@ -43,6 +68,58 @@
     // Affichage des markers
     displayMarkers();
   }
+  function styleFeature(feature) {
+	    var low = [5, 69, 54];  // color of smallest datum
+	    var high = [151, 83, 34];   // color of largest datum
+
+	    // delta represents where the value sits between the min and max
+	    var delta = (feature.getProperty('SCORE') - censusMin) /
+	        (censusMax - censusMin);
+	    //  alert(delta +"ffff"+feature.getProperty('SCORE')+"ccccMMM"+censusMin);
+
+	    var color = [];
+	    for (var i = 0; i < 3; i++) {
+	        // calculate an integer color based on the delta
+	        color[i] = (high[i] - low[i]) * delta + low[i];
+	    }
+
+	    // determine whether to show this shape or not
+	    var showRow = true;
+	    if (feature.getProperty('SCORE') == null ||
+	        isNaN(feature.getProperty('SCORE'))) {
+	        showRow = false;
+	    }
+
+	    var outlineWeight = 0.5, zIndex = 1;
+	    if (feature.getProperty('INSEE_COM') === 'hover') {
+	        outlineWeight = zIndex = 2;
+	    }
+
+	    return {
+	        strokeWeight: outlineWeight,
+	        strokeColor: '#fff',
+	        zIndex: zIndex,
+	        fillColor: 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)',
+	        fillOpacity: 0.75,
+	        visible: showRow
+	    };
+	}
+//fonction curseur sur une region
+  function mouseInToRegion(e) {
+	  // set the hover state so the setStyle function can change the border
+	  e.feature.setProperty('INSEE_COM', 'hover');
+
+	  var percent = (e.feature.getProperty('SCORE') - censusMin) /
+	      (censusMax - censusMin) * 100;
+
+
+	}
+//fonction curseur out
+  function mouseOutOfRegion(e) {
+	  // reset the hover state, returning the border to normal
+	  e.feature.setProperty('INSEE_COM', 'normal');
+	}
+  
 
   function displayMarkers() {
     // Suppression des anciens markers
@@ -190,18 +267,18 @@
         s += data.name;
         s += "</b>: <b>";
         s += score;
-        s += "</b> / 100.<ul>";
+        s += " / 100</b>.<ul>";
         s += "<li>Nombre de prime à la naissance: <b>";
         s += data.nbAllocs;
-        s += "<li>Nombre de pharmacies : <b>";
+        s += "</b><li>Nombre de pharmacies: <b>";
         s += data.nbPharmacie;
-        s += "<li>Nombre de sages femmes : <b>";
+        s += "</b><li>Nombre de sages femmes: <b>";
         s += data.nbSage;
-        s += "<li>Nombre d'écoles maternelle : <b>";
+        s += "</b><li>Nombre d'écoles maternelle: <b>";
         s += data.nbMaternelle;        
-        s += "<li>Nombre d'écoles elementaire : <b>";
+        s += "</b><li>Nombre d'écoles élementaire: <b>";
         s += data.nbElem; 
-        s += "<li>Population Totale : <b>";
+        s += "</b><li>Population totale: <b>";
         s += data.nbPop;
         s += "</b></li>";
         s += "</ul>";
