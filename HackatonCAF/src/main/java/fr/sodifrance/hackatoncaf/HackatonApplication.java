@@ -23,59 +23,40 @@ public class HackatonApplication implements CommandLineRunner {
 	}
 
 	public void run(String... strings) throws Exception {
-
-		// foyers allocataires / nombre dâ€™habitants de la commune
-		// Communes;Codes_Insee;NB_Allocataires;ALL_PAJE;ALL_PRIM;ALL_BASEP;ALL_CMG;ALL_CMG_ASMA;ALL_CMG_DOM;ALL_CMG_A;ALL_Clca_Colca
-		jdbcTemplate.execute("DROP TABLE IF EXISTS PAJE");
+	
+		// Chargement du fichier csv	
+		jdbcTemplate.execute("DROP TABLE IF EXISTS HakDB");
 		jdbcTemplate.execute(
-				"CREATE TABLE IF NOT EXISTS PAJE (CODE_INSEE VARCHAR(20), NB_ALLOCATAIRES VARCHAR(20), ANNEE NUMBER)"
-						+ " AS (" + " SELECT Codes_Insee, NB_Allocataires, 2013"
-						+ " FROM CSVREAD('classpath:db/PAJECom2013.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2014"
-						//+ " FROM CSVREAD('classpath:db/PAJECom2014.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2012"
-						//+ " FROM CSVREAD('classpath:db/PAJECom2012.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2011"
-						//+ " FROM CSVREAD('classpath:db/PAJECom2011.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2010"
-						//+ " FROM CSVREAD('classpath:db/PAJECom2010.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2009"
-						//+ " FROM CSVREAD('classpath:db/PAJECom2009.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						+ ")");
-		jdbcTemplate.execute("CREATE INDEX ON PAJE(CODE_INSEE, ANNEE) ");
-
-		// Geolocalisation des communues
-		// EU_circo
-		// code_rÃƒÂ©gion;nom;_rÃƒÂ©gionchef-lieu_rÃƒÂ©gion;numÃƒÂ©ro_dÃƒÂ©partement;nom_dÃƒÂ©partement;prÃƒÂ©fecture;numÃƒÂ©ro_circonscription;nom_commune;codes_postaux;code_insee;latitude;longitude;ÃƒÂ©loignement
-		// voir
-		// https://www.data.gouv.fr/fr/datasets/listes-des-communes-geolocalisees-par-regions-departements-circonscriptions-nd/
-		jdbcTemplate.execute("DROP TABLE IF EXISTS COMMUNE ");
-		jdbcTemplate.execute(
-				"CREATE TABLE IF NOT EXISTS COMMUNE (CODE_INSEE VARCHAR(20), NOM VARCHAR(100), LATITUDE VARCHAR, LONGITUDE VARCHAR)"
-						+ " AS SELECT code_insee, nom_commune, latitude, longitude"
-						+ " FROM CSVREAD('classpath:db/eucircos_regions_departements_circonscriptions_communes_gps.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')");
-		jdbcTemplate.execute("CREATE INDEX ON COMMUNE(CODE_INSEE) ");		
-		
-		// Bases de donnÃ©es des communes de l'INSEE avec le nombre d'habitants
-		jdbcTemplate.execute("DROP TABLE IF EXISTS INSEE ");
-		jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS INSEE " + " AS SELECT *"
-				+ " FROM CSVREAD('classpath:db/base-ic-evol-struct-pop-2011.csv')");
-		
-		// Base de données des pharmacies par code commune
-		// NB_PHARMACIE		
-		jdbcTemplate.execute("DROP TABLE IF EXISTS PHARMACIE ");
-		jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS PHARMACIE " + " AS SELECT *"
-				+ " FROM CSVREAD('classpath:db/4a_pharmacie_par_codecommune.csv',  NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')");
-				
-		
-		jdbcTemplate.execute("DROP TABLE IF EXISTS SNAPSHOT ");
-		jdbcTemplate.execute(
-		"CREATE TABLE IF NOT EXISTS SNAPSHOT (CODE_INSEE VARCHAR(20), NOM VARCHAR(100), LATITUDE VARCHAR, LONGITUDE VARCHAR, NB_ALLOCATAIRES VARCHAR(20), ANNEE NUMBER, NB_PHARMACIE VARCHAR(20))"
-		+ " AS (SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES, P.ANNEE, PH.NB_PHARMACIE "
-		+ " FROM COMMUNE AS C " 
-		+ " INNER JOIN PAJE AS P ON (C.CODE_INSEE = P.CODE_INSEE) "
-		+ " LEFT JOIN PHARMACIE AS PH ON (PH.CODE = P.CODE_INSEE)"
-		+")");
+				"CREATE TABLE IF NOT EXISTS HakDB ("		
+							 + " Codes_Insee VARCHAR(20) , "
+							 + " Communes VARCHAR(60) , "
+							 + " ALL_PAJE_2009 VARCHAR(20) , "
+							 + " ALL_PAJE_2010 VARCHAR(20) , " 
+							 + " ALL_PAJE_2011 VARCHAR(20) , "
+							 + " ALL_PAJE_2012 VARCHAR(20) , "
+							 + " ALL_PAJE_2013 VARCHAR(20) , "
+							 + " ALL_PAJE_2014 VARCHAR(20) , "
+							 + " NB_SAGE VARCHAR(20) , "
+							 + " NB_PHARMA VARCHAR(20) , " 
+							 + " NB_MATERNELLE VARCHAR(20) , " 
+							 + " LATITUDE VARCHAR(20) , "
+							 + " LONGITUDE VARCHAR(20) "
+							 + ")"
+		 + " AS (" + " SELECT Codes_Insee, " 
+						  + " Communes,"
+						  + " ALL_PAJE_2009,"
+						  + " ALL_PAJE_2010,"
+						  + " ALL_PAJE_2011,"
+						  + " ALL_PAJE_2012,"
+						  + " ALL_PAJE_2013,"
+						  + " ALL_PAJE_2014,"
+						  + " NB_SAGE,"
+						  + " NB_PHARMA,"
+						  + " NB_MATERNELLE,"
+						  + " LATITUDE,"
+						  + " LONGITUDE "
+		+ " FROM CSVREAD('classpath:db/HakDb.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+			+ ")");
 	}
 
 }

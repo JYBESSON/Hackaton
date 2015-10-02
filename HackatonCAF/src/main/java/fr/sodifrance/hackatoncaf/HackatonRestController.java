@@ -44,15 +44,18 @@ public class HackatonRestController {
 		final int anneeFilter = annee != null ? annee : 2014;
 		List<Commune> communes = jdbcTemplate.query(new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				 											  				
+				String lQuery = "SELECT Codes_Insee, "
+									    + "Communes, "
+										+ "LATITUDE, "
+										+ "LONGITUDE, "
+										+ "ALL_PAJE_" + anneeFilter
+										+ " FROM HakDb ";										
+				
 				PreparedStatement ps = connection
-						.prepareStatement("SELECT CODE_INSEE, NOM, LATITUDE, LONGITUDE, NB_ALLOCATAIRES "
-								+ "FROM SNAPSHOT WHERE ANNEE = ?");
-						// Decommenter ici, si on ne veut pa sutiliser SNAPSHOT
-						/*.prepareStatement("SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES "
-								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P "
-								+ "ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = ?)");
-						*/
-				ps.setInt(1, anneeFilter);
+						.prepareStatement(lQuery);
+												
+			
 				return ps;
 			}
 		}, new MyRowMapperResultSetExtractor<Commune>(mapper));
@@ -98,17 +101,21 @@ public class HackatonRestController {
 			@RequestParam(value = "annee", required = true) final int annee) {
 		CommuneDetail commune = jdbcTemplate.query(new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				
+				String lQuery = "SELECT Codes_Insee, "
+					    + "Communes, "
+						+ "LATITUDE, "
+						+ "LONGITUDE, "
+						+ "ALL_PAJE_" + annee
+						+ " FROM HakDb " 
+						+ "WHERE LATITUDE = ? AND LONGITUDE = ?";
+				
 				PreparedStatement ps = connection
-						.prepareStatement("SELECT CODE_INSEE, NOM, LATITUDE, LONGITUDE, NB_ALLOCATAIRES "
-								+ "FROM SNAPSHOT WHERE LATITUDE = ? AND LONGITUDE = ? AND ANNEE = ?");
-						// Decommenter ici, si on ne veut pa sutiliser SNAPSHOT
-						/*.prepareStatement("SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES "
-								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P " + "ON (C.CODE_INSEE = P.CODE_INSEE "
-								+ "AND C.LATITUDE = ? AND C.LONGITUDE = ? AND P.ANNEE = ?)");
-								*/
+						.prepareStatement(lQuery);
+						
 				ps.setString(1, lat);
 				ps.setString(2, lng);
-				ps.setInt(3, annee);
+						
 				return ps;
 			}
 		}, (ResultSetExtractor<CommuneDetail>)(new CommuneDetailFactory()));

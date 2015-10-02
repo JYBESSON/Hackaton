@@ -193,6 +193,8 @@
         s += "</b> / 100.<ul>";
         s += "<li>Nombre allocataires: <b>";
         s += data.nbAllocs;
+        s += "<li>Nombre de pharmacie: <b>";
+        s += data.nbPharmacie;
         s += "</b></li>";
         s += "</ul>";
         s += "</p>";

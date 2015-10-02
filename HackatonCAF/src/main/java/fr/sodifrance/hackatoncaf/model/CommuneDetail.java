@@ -5,7 +5,8 @@ public class CommuneDetail extends Commune {
 	private String insee;
 	private String name;
 	private Integer nbAllocs;
-
+	private Integer nbPharmacie;
+	
 	/**
 	 * @return the code_insee
 	 */
@@ -42,6 +43,14 @@ public class CommuneDetail extends Commune {
 	 */
 	public void setNbAllocs(Integer nbAllocs) {
 		this.nbAllocs = nbAllocs;
+	}
+
+	public Integer getNbPharmacie() {
+		return nbPharmacie;
+	}
+
+	public void setNbPharmacie(Integer nbPharmacie) {
+		this.nbPharmacie = nbPharmacie;
 	}
 
 }
