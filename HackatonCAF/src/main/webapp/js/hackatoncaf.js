@@ -191,10 +191,14 @@
         s += "</b>: <b>";
         s += score;
         s += "</b> / 100.<ul>";
-        s += "<li>Nombre allocataires: <b>";
+        s += "<li>Nombre de prime à la naissance: <b>";
         s += data.nbAllocs;
-        s += "<li>Nombre de pharmacie: <b>";
+        s += "<li>Nombre de pharmacies : <b>";
         s += data.nbPharmacie;
+        s += "<li>Nombre de sages femmes : <b>";
+        s += data.nbSage;
+        s += "<li>Nombre d'écoles maternelle : <b>";
+        s += data.nbMaternelle;        
         s += "</b></li>";
         s += "</ul>";
         s += "</p>";
