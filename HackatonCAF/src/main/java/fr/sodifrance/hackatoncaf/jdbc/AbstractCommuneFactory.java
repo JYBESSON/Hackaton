@@ -37,9 +37,13 @@ public abstract class AbstractCommuneFactory<T extends Commune> implements RowMa
 		Double latitude = getDouble(rs, 3);
 		Double longitude = getDouble(rs, 4);
 		Integer nbAllocataires = getInteger(rs, 5);
+		Integer nbSage = getInteger(rs, 6);
+		Integer nbPharma = getInteger(rs, 7);
+		Integer nbMaternelle = getInteger(rs, 8);
+
 		Integer score = HackatonRestController.computeScore(nbAllocataires);
 		if (latitude != null && latitude != 0 && longitude != null && longitude != 0 && score != null) {
-			T commune = create(insee, name, nbAllocataires);
+			T commune = create(insee, name, nbAllocataires, nbPharma, nbSage, nbMaternelle);
 			commune.setLoc(new Loc(latitude, longitude));
 			commune.setScore(score);
 			return commune;
@@ -68,6 +72,7 @@ public abstract class AbstractCommuneFactory<T extends Commune> implements RowMa
 		return maxScore;
 	}
 
-	protected abstract T create(String insee, String name, Integer nbAllocs);
+	protected abstract T create(String insee, String name, Integer nbAllocs, Integer nbPharmacie, Integer nbSage,
+			Integer nbMaternelle);
 
 }

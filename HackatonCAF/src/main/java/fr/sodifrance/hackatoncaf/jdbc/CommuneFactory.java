@@ -5,7 +5,7 @@ import fr.sodifrance.hackatoncaf.model.Commune;
 public class CommuneFactory extends AbstractCommuneFactory<Commune> {
 
 	@Override
-	protected Commune create(String insee, String name, Integer nbAllocs) {
+	protected Commune create(String insee, String name, Integer nbAllocs, Integer nbPharmacie, Integer nbSage, Integer nbMaternelle) {
 		return new Commune();
 	}
 }

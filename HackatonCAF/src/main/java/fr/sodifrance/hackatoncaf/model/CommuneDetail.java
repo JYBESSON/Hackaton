@@ -6,6 +6,8 @@ public class CommuneDetail extends Commune {
 	private String name;
 	private Integer nbAllocs;
 	private Integer nbPharmacie;
+	private Integer nbSage;
+	private Integer nbMaternelle;
 	
 	/**
 	 * @return the code_insee
@@ -51,6 +53,22 @@ public class CommuneDetail extends Commune {
 
 	public void setNbPharmacie(Integer nbPharmacie) {
 		this.nbPharmacie = nbPharmacie;
+	}
+
+	public Integer getNbSage() {
+		return nbSage;
+	}
+
+	public void setNbSage(Integer nbSage) {
+		this.nbSage = nbSage;
+	}
+
+	public Integer getNbMaternelle() {
+		return nbMaternelle;
+	}
+
+	public void setNbMaternelle(Integer nbMaternelle) {
+		this.nbMaternelle = nbMaternelle;
 	}
 
 }

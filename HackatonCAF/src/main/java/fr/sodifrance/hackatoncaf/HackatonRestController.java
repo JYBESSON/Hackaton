@@ -106,7 +106,10 @@ public class HackatonRestController {
 					    + "Communes, "
 						+ "LATITUDE, "
 						+ "LONGITUDE, "
-						+ "ALL_PAJE_" + annee
+						+ "ALL_PAJE_" + annee +","
+						+ " NB_SAGE,"
+						+ " NB_PHARMA,"
+						+ " NB_MATERNELLE"
 						+ " FROM HakDb " 
 						+ "WHERE LATITUDE = ? AND LONGITUDE = ?";
 				
