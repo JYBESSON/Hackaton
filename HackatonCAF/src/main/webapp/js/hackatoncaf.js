@@ -272,7 +272,7 @@
         
         s += "<li>Ratio ratio2aFreqCreche : <b>";
         s += data.ratio2aFreqCreche;
-        s += "<li>Ratio ratio4aPharm : <b>";
+        s += "</b><li>Ratio ratio4aPharm : <b>";
         s += data.ratio4aPharm;        
         s += "</b><li>Nombre d'enfants de moins de 3 ans  : <b>";
         s += data.nbEnfant3;
