@@ -52,14 +52,14 @@
       panControl: false, 
       mapTypeControl: false,
       streetViewControl: true
-    //  styles: mapStyle
+     // styles: mapStyle
     });
     // Ajout des controles annee + slider score
-    map.data.loadGeoJson('js/TEST_COM.json',{ idPropertyName: 'INSEE_COM' });
+    map.data.loadGeoJson('js/COMMUNE.json',{ idPropertyName: 'INSEE_COM' });
     //styling features
     map.data.setStyle(styleFeature);
     map.data.addListener('mouseover', mouseInToRegion);
-   // map.data.addListener('mouseout', mouseOutOfRegion);
+    map.data.addListener('mouseout', mouseOutOfRegion);
     
     addYearControl(map);
     addSliderScoreControl(map);
@@ -73,7 +73,7 @@
 	    var high = [151, 83, 34];   // color of largest datum
 
 	    // delta represents where the value sits between the min and max
-	    var delta = (feature.getProperty('SCORE') - censusMin) /
+	    var delta = (feature.getProperty('CODE_COM') - censusMin) /
 	        (censusMax - censusMin);
 	    //  alert(delta +"ffff"+feature.getProperty('SCORE')+"ccccMMM"+censusMin);
 
@@ -85,8 +85,8 @@
 
 	    // determine whether to show this shape or not
 	    var showRow = true;
-	    if (feature.getProperty('SCORE') == null ||
-	        isNaN(feature.getProperty('SCORE'))) {
+	    if (feature.getProperty('CODE_COM') == null ||
+	        isNaN(feature.getProperty('CODE_COM'))) {
 	        showRow = false;
 	    }
 
@@ -109,7 +109,7 @@
 	  // set the hover state so the setStyle function can change the border
 	  e.feature.setProperty('INSEE_COM', 'hover');
 
-	  var percent = (e.feature.getProperty('SCORE') - censusMin) /
+	  var percent = (e.feature.getProperty('CODE_COM') - censusMin) /
 	      (censusMax - censusMin) * 100;
 
 
@@ -268,8 +268,20 @@
         s += "</b>: <b>";
         s += score;
         s += " / 100</b>.<ul>";
-        s += "<li>Nombre de prime à la naissance: <b>";
-        s += data.nbAllocs;
+        
+        
+        s += "<li>Ratio ratio2aFreqCreche : <b>";
+        s += data.ratio2aFreqCreche;
+        s += "<li>Ratio ratio4aPharm : <b>";
+        s += data.ratio4aPharm;        
+        s += "</b><li>Nombre d'enfants de moins de 3 ans  : <b>";
+        s += data.nbEnfant3;
+        s += "</b><li>Nombre d'enfants entre 3 et 6 ans: <b>";
+        s += data.nbEnfant36;        
+        s += "</b><li>Nombre de places dispo dans les crèches : <b>";
+        s += data.nbCrechePlaceDispo;
+        s += "</b><li>Nombre de crèches : <b>";
+        s += data.nbCreche;        
         s += "</b><li>Nombre de pharmacies: <b>";
         s += data.nbPharmacie;
         s += "</b><li>Nombre de sages femmes: <b>";
@@ -283,7 +295,7 @@
         s += "</b></li>";
         s += "</ul>";
         s += "</p>";
-     
+ 		
         infoWindow.setContent(s);
         infoWindow.open(marker.getMap(), marker);
       },
