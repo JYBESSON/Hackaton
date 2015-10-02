@@ -36,12 +36,12 @@ public class HackatonRestController {
 	 * @return
 	 */
 	@RequestMapping(value = "/communes", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Commune> communes(@RequestParam(value = "annee", required = false) Integer annee,
+	public List<Commune> communes(
 			@RequestParam(value = "from", required = false) Integer from,
 			@RequestParam(value = "to", required = false) Integer to) {
 
 		CommuneFactory mapper = new CommuneFactory();
-		final int anneeFilter = annee != null ? annee : 2014;
+		
 		List<Commune> communes = jdbcTemplate.query(new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				 											  				
@@ -49,7 +49,7 @@ public class HackatonRestController {
 									    + "Communes, "
 										+ "LATITUDE, "
 										+ "LONGITUDE, "
-										+ "ALL_PAJE_" + anneeFilter
+										+ "ALL_PAJE_2014"  
 										+ " FROM HakDb ";										
 				
 				PreparedStatement ps = connection
@@ -96,9 +96,7 @@ public class HackatonRestController {
 	}
 
 	@RequestMapping(value = "/commune", produces = MediaType.APPLICATION_JSON_VALUE)
-	public CommuneDetail commune(@RequestParam(value = "lat", required = true) final String lat,
-			@RequestParam(value = "lng", required = true) final String lng,
-			@RequestParam(value = "annee", required = true) final int annee) {
+	public CommuneDetail commune(@RequestParam(value = "code", required = true) final String code) {
 		CommuneDetail commune = jdbcTemplate.query(new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				
@@ -106,20 +104,19 @@ public class HackatonRestController {
 					    + "Communes, "
 						+ "LATITUDE, "
 						+ "LONGITUDE, "
-						+ "ALL_PAJE_" + annee +","
+						+ "ALL_PAJE_2014" 
 						+ " NB_SAGE,"
 						+ " NB_PHARMA,"
 						+ " NB_MATERNELLE,"
 						+ " NB_ECOLE_ELEM, "
 						+ " POP "
 						+ " FROM HakDb " 
-						+ "WHERE LATITUDE = ? AND LONGITUDE = ?";
+						+ "WHERE Codes_Insee = ?";
 				
 				PreparedStatement ps = connection
 						.prepareStatement(lQuery);
 						
-				ps.setString(1, lat);
-				ps.setString(2, lng);
+				ps.setString(1, code);				
 						
 				return ps;
 			}

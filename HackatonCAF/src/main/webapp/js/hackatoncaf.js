@@ -54,15 +54,15 @@
     var scores = $( "#score-control" ).slider("values");
     
     // Appel du service pour recuperer les villes + creer les markers
-    var url = SERVICE_URL + "?annee=" + year + "&from=" + scores[0] + "&to=" + scores[1];
+    var url = SERVICE_URL + "?from=" + scores[0] + "&to=" + scores[1];
     $.ajax({
       url : url,
       type : "GET",
       dataType: "json",
       success: function(data, textStatus) {
         for (var i = 0; i < data.length; i++) {
-          var commune = data[i], loc = commune.loc, score = commune.score;
-          addMarker(map, loc, score);
+          var commune = data[i], code = commune.code, loc = commune.loc, score = commune.score;
+          addMarker(map, code, loc, score);
         }
       },
       error: function(qXHR, textStatus, errorThrown) {
@@ -163,7 +163,7 @@
   /**
    * Creation d'un marker sur la carte a la position donnée en utilisant l'icone donné.
    */
-  function addMarker(map, position, score) {
+  function addMarker(map, code, position, score) {
     var icon = LEVELS[getLevel(score)];
     var marker = new google.maps.Marker({
         position: position,
@@ -173,14 +173,14 @@
     });
     markers.push(marker);
     google.maps.event.addListener(marker, 'click', function() {
-      openInfo(this, position, score);
+      openInfo(this, code, position, score);
     }); 
   }
 
   
-  function openInfo(marker, position, score) {    
+  function openInfo(marker, code, position, score) {    
     // Appel du service pour recuperer le detail de la commune
-    var url = "commune" + "?annee=" + year + "&lat=" + position.lat + "&lng=" + position.lng;
+    var url = "commune" + "?code=" + code;
     $.ajax({
       url : url,
       type : "GET",

@@ -7,11 +7,20 @@ package fr.sodifrance.hackatoncaf.model;
  */
 public class Commune {
 	
+	private String code;
+	
 	private Integer score;
 
 	private Loc loc;
 	
-		
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+			
 	public void setLoc(Loc loc) {
 		this.loc = loc;
 	}
@@ -27,5 +36,6 @@ public class Commune {
 	public Integer getScore() {
 		return score;
 	}
+
 	
 }

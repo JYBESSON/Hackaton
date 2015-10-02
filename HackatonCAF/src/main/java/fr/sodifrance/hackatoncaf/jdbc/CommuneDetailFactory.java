@@ -8,6 +8,7 @@ public class CommuneDetailFactory extends AbstractCommuneFactory<CommuneDetail> 
 	protected CommuneDetail create(String insee, String name, Integer nbAllocs, Integer nbPharmacie, Integer nbSage, Integer nbMaternelle, Integer nbElem, Integer nbPop) {
 		
 		CommuneDetail commune = new CommuneDetail();
+		commune.setCode(insee);
 		commune.setInsee(insee);
 		commune.setName(name);
 		commune.setNbAllocs(nbAllocs);
