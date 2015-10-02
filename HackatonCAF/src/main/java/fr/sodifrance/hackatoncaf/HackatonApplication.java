@@ -23,7 +23,7 @@ public class HackatonApplication implements CommandLineRunner {
 	}
 
 	public void run(String... strings) throws Exception {
-	
+		//NB_ECOLE_ELEM;POP
 		// Chargement du fichier csv	
 		jdbcTemplate.execute("DROP TABLE IF EXISTS HakDB");
 		jdbcTemplate.execute(
@@ -39,6 +39,8 @@ public class HackatonApplication implements CommandLineRunner {
 							 + " NB_SAGE VARCHAR(20) , "
 							 + " NB_PHARMA VARCHAR(20) , " 
 							 + " NB_MATERNELLE VARCHAR(20) , " 
+							 + " NB_ECOLE_ELEM VARCHAR(20) , "
+							 + " POP VARCHAR(20) , "
 							 + " LATITUDE VARCHAR(20) , "
 							 + " LONGITUDE VARCHAR(20) "
 							 + ")"
@@ -53,6 +55,8 @@ public class HackatonApplication implements CommandLineRunner {
 						  + " NB_SAGE,"
 						  + " NB_PHARMA,"
 						  + " NB_MATERNELLE,"
+						  + " NB_ECOLE_ELEM, "
+						  + " POP , "
 						  + " LATITUDE,"
 						  + " LONGITUDE "
 		+ " FROM CSVREAD('classpath:db/HakDb.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"

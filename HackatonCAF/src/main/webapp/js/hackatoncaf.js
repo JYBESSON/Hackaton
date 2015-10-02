@@ -199,6 +199,10 @@
         s += data.nbSage;
         s += "<li>Nombre d'écoles maternelle : <b>";
         s += data.nbMaternelle;        
+        s += "<li>Nombre d'écoles elementaire : <b>";
+        s += data.nbElem; 
+        s += "<li>Population Totale : <b>";
+        s += data.nbPop;
         s += "</b></li>";
         s += "</ul>";
         s += "</p>";

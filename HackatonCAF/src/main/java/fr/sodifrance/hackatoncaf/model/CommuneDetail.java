@@ -8,6 +8,8 @@ public class CommuneDetail extends Commune {
 	private Integer nbPharmacie;
 	private Integer nbSage;
 	private Integer nbMaternelle;
+	private Integer nbElem;
+	private Integer nbPop;
 	
 	/**
 	 * @return the code_insee
@@ -69,6 +71,22 @@ public class CommuneDetail extends Commune {
 
 	public void setNbMaternelle(Integer nbMaternelle) {
 		this.nbMaternelle = nbMaternelle;
+	}
+
+	public Integer getNbElem() {
+		return nbElem;
+	}
+
+	public void setNbElem(Integer nbElem) {
+		this.nbElem = nbElem;
+	}
+
+	public Integer getNbPop() {
+		return nbPop;
+	}
+
+	public void setNbPop(Integer nbPop) {
+		this.nbPop = nbPop;
 	}
 
 }

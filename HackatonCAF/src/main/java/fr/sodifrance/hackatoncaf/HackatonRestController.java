@@ -109,7 +109,9 @@ public class HackatonRestController {
 						+ "ALL_PAJE_" + annee +","
 						+ " NB_SAGE,"
 						+ " NB_PHARMA,"
-						+ " NB_MATERNELLE"
+						+ " NB_MATERNELLE,"
+						+ " NB_ECOLE_ELEM, "
+						+ " POP "
 						+ " FROM HakDb " 
 						+ "WHERE LATITUDE = ? AND LONGITUDE = ?";
 				
