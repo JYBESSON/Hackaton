@@ -191,8 +191,20 @@
         s += "</b>: <b>";
         s += score;
         s += " / 100</b>.<ul>";
-        s += "<li>Nombre de prime à la naissance: <b>";
-        s += data.nbAllocs;
+        
+        
+        s += "<li>Ratio ratio2aFreqCreche : <b>";
+        s += data.ratio2aFreqCreche;
+        s += "<li>Ratio ratio4aPharm : <b>";
+        s += data.ratio4aPharm;        
+        s += "</b><li>Nombre d'enfants de moins de 3 ans  : <b>";
+        s += data.nbEnfant3;
+        s += "</b><li>Nombre d'enfants entre 3 et 6 ans: <b>";
+        s += data.nbEnfant36;        
+        s += "</b><li>Nombre de places dispo dans les crèches : <b>";
+        s += data.nbCrechePlaceDispo;
+        s += "</b><li>Nombre de crèches : <b>";
+        s += data.nbCreche;        
         s += "</b><li>Nombre de pharmacies: <b>";
         s += data.nbPharmacie;
         s += "</b><li>Nombre de sages femmes: <b>";
@@ -206,7 +218,7 @@
         s += "</b></li>";
         s += "</ul>";
         s += "</p>";
-     
+ 		
         infoWindow.setContent(s);
         infoWindow.open(marker.getMap(), marker);
       },
