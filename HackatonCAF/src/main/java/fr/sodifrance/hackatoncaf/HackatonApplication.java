@@ -31,16 +31,16 @@ public class HackatonApplication implements CommandLineRunner {
 				"CREATE TABLE IF NOT EXISTS PAJE (CODE_INSEE VARCHAR(20), NB_ALLOCATAIRES VARCHAR(20), ANNEE NUMBER)"
 						+ " AS (" + " SELECT Codes_Insee, NB_Allocataires, 2013"
 						+ " FROM CSVREAD('classpath:db/PAJECom2013.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2014"
-						+ " FROM CSVREAD('classpath:db/PAJECom2014.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2012"
-						+ " FROM CSVREAD('classpath:db/PAJECom2012.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2011"
-						+ " FROM CSVREAD('classpath:db/PAJECom2011.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2010"
-						+ " FROM CSVREAD('classpath:db/PAJECom2010.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
-						+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2009"
-						+ " FROM CSVREAD('classpath:db/PAJECom2009.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2014"
+						//+ " FROM CSVREAD('classpath:db/PAJECom2014.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2012"
+						//+ " FROM CSVREAD('classpath:db/PAJECom2012.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2011"
+						//+ " FROM CSVREAD('classpath:db/PAJECom2011.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2010"
+						//+ " FROM CSVREAD('classpath:db/PAJECom2010.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
+						//+ " UNION " + " SELECT Codes_Insee, NB_Allocataires, 2009"
+						//+ " FROM CSVREAD('classpath:db/PAJECom2009.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
 						+ ")");
 		jdbcTemplate.execute("CREATE INDEX ON PAJE(CODE_INSEE, ANNEE) ");
 
@@ -61,15 +61,21 @@ public class HackatonApplication implements CommandLineRunner {
 		jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS INSEE " + " AS SELECT *"
 				+ " FROM CSVREAD('classpath:db/base-ic-evol-struct-pop-2011.csv')");
 		
+		// Base de données des pharmacies par code commune
+		// NB_PHARMACIE		
+		jdbcTemplate.execute("DROP TABLE IF EXISTS PHARMACIE ");
+		jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS PHARMACIE " + " AS SELECT *"
+				+ " FROM CSVREAD('classpath:db/4a_pharmacie_par_codecommune.csv',  NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')");
+				
+		
 		jdbcTemplate.execute("DROP TABLE IF EXISTS SNAPSHOT ");
 		jdbcTemplate.execute(
-				"CREATE TABLE IF NOT EXISTS SNAPSHOT (CODE_INSEE VARCHAR(20), NOM VARCHAR(100), LATITUDE VARCHAR, LONGITUDE VARCHAR, NB_ALLOCATAIRES VARCHAR(20), ANNEE NUMBER)"
-						+ " AS (SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES, P.ANNEE "
-								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P "
-								+ "ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = 2013)"
-								+ "UNION SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES, P.ANNEE "
-								+ "FROM COMMUNE AS C INNER JOIN PAJE AS P "
-								+ "ON (C.CODE_INSEE = P.CODE_INSEE AND P.ANNEE = 2014))");
+		"CREATE TABLE IF NOT EXISTS SNAPSHOT (CODE_INSEE VARCHAR(20), NOM VARCHAR(100), LATITUDE VARCHAR, LONGITUDE VARCHAR, NB_ALLOCATAIRES VARCHAR(20), ANNEE NUMBER, NB_PHARMACIE VARCHAR(20))"
+		+ " AS (SELECT C.CODE_INSEE, C.NOM, C.LATITUDE, C.LONGITUDE, P.NB_ALLOCATAIRES, P.ANNEE, PH.NB_PHARMACIE "
+		+ " FROM COMMUNE AS C " 
+		+ " INNER JOIN PAJE AS P ON (C.CODE_INSEE = P.CODE_INSEE) "
+		+ " LEFT JOIN PHARMACIE AS PH ON (PH.CODE = P.CODE_INSEE)"
+		+")");
 	}
 
 }
