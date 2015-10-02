@@ -48,8 +48,7 @@ public class HackatonRestController {
 				String lQuery = "SELECT Codes_Insee, "
 									    + "Communes, "
 										+ "LATITUDE, "
-										+ "LONGITUDE, "
-										+ "ALL_PAJE_2014"  
+										+ "LONGITUDE "										 
 										+ " FROM HakDb ";										
 				
 				PreparedStatement ps = connection
@@ -100,16 +99,24 @@ public class HackatonRestController {
 		CommuneDetail commune = jdbcTemplate.query(new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				
-				String lQuery = "SELECT Codes_Insee, "
-					    + "Communes, "
-						+ "LATITUDE, "
-						+ "LONGITUDE, "
-						+ "ALL_PAJE_2014" 
-						+ " NB_SAGE,"
-						+ " NB_PHARMA,"
-						+ " NB_MATERNELLE,"
-						+ " NB_ECOLE_ELEM, "
-						+ " POP "
+				String lQuery = "SELECT Codes_Insee, " 	
+								 + " Communes  , "
+								 + " LATITUDE, "
+								 + " LONGITUDE, "
+								 + " RATIO_2A_FREQ_CRECHE  , "
+								 + " RATIO_4A_PHARM  , "
+								 + " ENF_MOINS_3  , "
+								 + " ENF_3_6   , "
+								 + " CRECHE_PL_DISPO   , "
+								 + " NB_CRECHE   , "
+								 + " NB_SAGE , "
+								 + " NB_PHARMA  , " 
+								 + " NB_MATERNELLE  , " 
+								 + " NB_ECOLE_ELEM  , "
+								 + " POP  , "
+								 + " LATITUDE  , "
+								 + " LONGITUDE , "
+								 + " GEOMETRY  "
 						+ " FROM HakDb " 
 						+ "WHERE Codes_Insee = ?";
 				

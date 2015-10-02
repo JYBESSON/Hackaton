@@ -36,16 +36,25 @@ public abstract class AbstractCommuneFactory<T extends Commune> implements RowMa
 		String name = rs.getString(2);
 		Double latitude = getDouble(rs, 3);
 		Double longitude = getDouble(rs, 4);
-		Integer nbAllocataires = getInteger(rs, 5);
-		Integer nbSage = getInteger(rs, 6);
-		Integer nbPharma = getInteger(rs, 7);
-		Integer nbMaternelle = getInteger(rs, 8);		
-		Integer nbElem = getInteger(rs, 9);
-		Integer nbPop= getInteger(rs, 10);
 
-		Integer score = HackatonRestController.computeScore(nbAllocataires);
+		Double ratio2aFreqCreche = getDouble(rs, 5);
+		Double ratio4aPharm = getDouble(rs, 6);
+		Integer nbEnfant3 = getInteger(rs, 7);
+		Integer nbEnfant36 = getInteger(rs, 8);
+		Integer nbCrechePlaceDispo = getInteger(rs, 9);
+		Integer nbCreche = getInteger(rs, 10);
+
+		Integer nbSage = getInteger(rs, 11);
+		Integer nbPharma = getInteger(rs, 12);
+		Integer nbMaternelle = getInteger(rs, 13);
+		Integer nbElem = getInteger(rs, 14);
+		Integer nbPop = getInteger(rs, 15);
+		//String geometry = rs.getString(16);
+
+		Integer score = 1;
 		if (latitude != null && latitude != 0 && longitude != null && longitude != 0 && score != null) {
-			T commune = create(insee, name, nbAllocataires, nbPharma, nbSage, nbMaternelle, nbElem, nbPop);
+			T commune = create(insee, name, ratio2aFreqCreche, ratio4aPharm, nbEnfant3, nbEnfant36, nbCrechePlaceDispo,
+					nbCreche, nbPharma, nbSage, nbMaternelle, nbElem, nbPop, "");
 			commune.setLoc(new Loc(latitude, longitude));
 			commune.setScore(score);
 			return commune;
@@ -74,7 +83,8 @@ public abstract class AbstractCommuneFactory<T extends Commune> implements RowMa
 		return maxScore;
 	}
 
-	protected abstract T create(String insee, String name, Integer nbAllocs, Integer nbPharmacie, Integer nbSage,
-			Integer nbMaternelle, Integer nbElem, Integer nbPop);
+	protected abstract T create(String insee, String name, Double ratio2aFreqCreche, Double ratio4aPharm,
+			Integer nbEnfant3, Integer nbEnfant36, Integer nbCrechePlaceDispo, Integer nbCreche, Integer nbPharmacie,
+			Integer nbSage, Integer nbMaternelle, Integer nbElem, Integer nbPop, String geometry);
 
 }
