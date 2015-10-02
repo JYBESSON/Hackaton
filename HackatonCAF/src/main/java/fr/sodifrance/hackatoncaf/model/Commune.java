@@ -13,6 +13,8 @@ public class Commune {
 
 	private Loc loc;
 	
+	private String geometry;
+	
 	public String getCode() {
 		return code;
 	}
@@ -37,5 +39,11 @@ public class Commune {
 		return score;
 	}
 
+	public String getGeometry() {
+		return geometry;
+	}
+	public void setGeometry(String geometry) {
+		this.geometry = geometry;
+	}
 	
 }

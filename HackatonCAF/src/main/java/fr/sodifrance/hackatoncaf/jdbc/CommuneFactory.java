@@ -21,6 +21,7 @@ public class CommuneFactory extends AbstractCommuneFactory<Commune> {
 			 String geometry) {
 		Commune commune = new Commune();
 		commune.setCode(insee);
+		commune.setGeometry(geometry);
 		return commune;
 		
 	}

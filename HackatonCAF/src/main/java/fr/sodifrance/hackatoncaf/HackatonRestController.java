@@ -48,7 +48,8 @@ public class HackatonRestController {
 				String lQuery = "SELECT Codes_Insee, "
 									    + "Communes, "
 										+ "LATITUDE, "
-										+ "LONGITUDE "										 
+										+ "LONGITUDE, "	
+										+ "GEOMETRY "
 										+ " FROM HakDb ";										
 				
 				PreparedStatement ps = connection

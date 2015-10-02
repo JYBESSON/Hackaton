@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.Assert;
 
+import fr.sodifrance.hackatoncaf.model.Commune;
+
 public class MyRowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
 
 	private final RowMapper<T> rowMapper;
@@ -45,11 +47,15 @@ public class MyRowMapperResultSetExtractor<T> implements ResultSetExtractor<List
 		List<T> results = (this.rowsExpected > 0 ? new ArrayList<T>(this.rowsExpected) : new ArrayList<T>());
 		int rowNum = 0;
 		while (rs.next()) {
+
 			T data = this.rowMapper.mapRow(rs, rowNum++);
+
 			// Ici on teste si la commune n'est pas nulle pour l'ajouter a
 			// la
 			// liste.
 			if (data != null) {
+				Commune com = (Commune) data;
+				com.setGeometry(rs.getString(5));
 				results.add(data);
 			}
 		}

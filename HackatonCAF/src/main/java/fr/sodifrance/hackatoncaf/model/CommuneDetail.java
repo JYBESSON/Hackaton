@@ -15,7 +15,7 @@ public class CommuneDetail extends Commune {
 	private Integer nbMaternelle;
 	private Integer nbElem;
 	private Integer nbPop;
-	private String geometry;
+	
 	
 	/**
 	 * @return the insee
@@ -172,12 +172,6 @@ public class CommuneDetail extends Commune {
 	 */
 	public void setNbPop(Integer nbPop) {
 		this.nbPop = nbPop;
-	}
-	public String getGeometry() {
-		return geometry;
-	}
-	public void setGeometry(String geometry) {
-		this.geometry = geometry;
 	}
 	
 

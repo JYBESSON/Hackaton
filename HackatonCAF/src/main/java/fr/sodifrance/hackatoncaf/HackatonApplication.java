@@ -43,7 +43,7 @@ public class HackatonApplication implements CommandLineRunner {
 							 + " POP VARCHAR(20) , "
 							 + " LATITUDE VARCHAR(20) , "
 							 + " LONGITUDE VARCHAR(20), "
-							 + " GEOMETRY CLOB(100000) "
+							 + " GEOMETRY VARCHAR(100000) "
 							 + ")"
 		 + " AS (" + " SELECT Codes_Insee, " 	
 						 + " Communes  , "
