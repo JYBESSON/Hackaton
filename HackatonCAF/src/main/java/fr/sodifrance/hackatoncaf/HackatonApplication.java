@@ -23,17 +23,24 @@ public class HackatonApplication implements CommandLineRunner {
 	}
 
 	public void run(String... strings) throws Exception {
-					
+		
+	
+		
 		// Chargement du fichier csv	
 		jdbcTemplate.execute("DROP TABLE IF EXISTS HakDB");
 		jdbcTemplate.execute(
 				"CREATE TABLE IF NOT EXISTS HakDB ("		
 							 + " Codes_Insee VARCHAR(20) , "
 							 + " Communes VARCHAR(60) , "
-							 + " RATIO_2A_FREQ_CRECHE VARCHAR(60) , "
-							 + " RATIO_4A_PHARM VARCHAR(60) , "
+							 + " RATIO_2A_FREQ_CRECHE VARCHAR(20) , "
+							 + " RATIO_4A_PHARM VARCHAR(20) , "
+							 + " RATIO_5A_MATERN VARCHAR(20) , "
+							 + " RATIO_6_SAGE VARCHAR(20) , "
+							 + " RATIO_7_ELEM_POP610 VARCHAR(20) , "
+							 + " SCORE VARCHAR(20) , "
 							 + " ENF_MOINS_3 VARCHAR(60) , "
 							 + " ENF_3_6  VARCHAR(60) , "
+							 + " ENF_6_10  VARCHAR(60) , "
 							 + " CRECHE_PL_DISPO  VARCHAR(60) , "
 							 + " NB_CRECHE  VARCHAR(60) , "
 							 + " NB_SAGE VARCHAR(20) , "
@@ -49,8 +56,13 @@ public class HackatonApplication implements CommandLineRunner {
 						 + " Communes  , "
 						 + " RATIO_2A_FREQ_CRECHE  , "
 						 + " RATIO_4A_PHARM  , "
+						 + " RATIO_5A_MATERN,"
+						 + " RATIO_6_SAGE,"
+						 + " RATIO_7_ELEM_POP610,"
+						 + " SCORE,"
 						 + " ENF_MOINS_3  , "
 						 + " ENF_3_6   , "
+						 + " ENF_6_10 , "
 						 + " CRECHE_PL_DISPO   , "
 						 + " NB_CRECHE   , "
 						 + " NB_SAGE , "
