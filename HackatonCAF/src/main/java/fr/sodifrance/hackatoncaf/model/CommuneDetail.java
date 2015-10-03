@@ -6,8 +6,12 @@ public class CommuneDetail extends Commune {
 	private String name;	
 	private Double ratio2aFreqCreche;
 	private Double ratio4aPharm;
+	private Double ratio5aMatern;
+	private Double ratio6sage;
+	private Double ratio7elem;
 	private Integer nbEnfant3;
 	private Integer nbEnfant36;
+	private Integer nbEnfant6;
 	private Integer nbCrechePlaceDispo;
 	private Integer nbCreche;
 	private Integer nbPharmacie;
@@ -172,6 +176,30 @@ public class CommuneDetail extends Commune {
 	 */
 	public void setNbPop(Integer nbPop) {
 		this.nbPop = nbPop;
+	}
+	public Integer getNbEnfant6() {
+		return nbEnfant6;
+	}
+	public void setNbEnfant6(Integer nbEnfant6) {
+		this.nbEnfant6 = nbEnfant6;
+	}
+	public Double getRatio5aMatern() {
+		return ratio5aMatern;
+	}
+	public void setRatio5aMatern(Double ratio5aMatern) {
+		this.ratio5aMatern = ratio5aMatern;
+	}
+	public Double getRatio6sage() {
+		return ratio6sage;
+	}
+	public void setRatio6sage(Double ratio6sage) {
+		this.ratio6sage = ratio6sage;
+	}
+	public Double getRatio7elem() {
+		return ratio7elem;
+	}
+	public void setRatio7elem(Double ratio7elem) {
+		this.ratio7elem = ratio7elem;
 	}
 	
 

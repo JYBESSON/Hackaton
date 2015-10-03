@@ -46,10 +46,9 @@ public class HackatonRestController {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				 											  				
 				String lQuery = "SELECT Codes_Insee, "
-									    + "Communes, "
+									    + "SCORE, "
 										+ "LATITUDE, "
-										+ "LONGITUDE, "	
-										+ "GEOMETRY "
+										+ "LONGITUDE "											
 										+ " FROM HakDb ";										
 				
 				PreparedStatement ps = connection
@@ -106,8 +105,13 @@ public class HackatonRestController {
 								 + " LONGITUDE, "
 								 + " RATIO_2A_FREQ_CRECHE  , "
 								 + " RATIO_4A_PHARM  , "
+								 + " RATIO_5A_MATERN,"
+								 + " RATIO_6_SAGE,"
+								 + " RATIO_7_ELEM_POP610,"
+								 + " SCORE,"
 								 + " ENF_MOINS_3  , "
 								 + " ENF_3_6   , "
+								 + " ENF_6_10 , "
 								 + " CRECHE_PL_DISPO   , "
 								 + " NB_CRECHE   , "
 								 + " NB_SAGE , "
@@ -116,8 +120,7 @@ public class HackatonRestController {
 								 + " NB_ECOLE_ELEM  , "
 								 + " POP  , "
 								 + " LATITUDE  , "
-								 + " LONGITUDE , "
-								 + " GEOMETRY  "
+								 + " LONGITUDE  "								 
 						+ " FROM HakDb " 
 						+ "WHERE Codes_Insee = ?";
 				

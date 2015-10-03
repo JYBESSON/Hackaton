@@ -49,8 +49,7 @@ public class HackatonApplication implements CommandLineRunner {
 							 + " NB_ECOLE_ELEM VARCHAR(20) , "
 							 + " POP VARCHAR(20) , "
 							 + " LATITUDE VARCHAR(20) , "
-							 + " LONGITUDE VARCHAR(20), "
-							 + " GEOMETRY VARCHAR(100000) "
+							 + " LONGITUDE VARCHAR(20) "							
 							 + ")"
 		 + " AS (" + " SELECT Codes_Insee, " 	
 						 + " Communes  , "
@@ -71,8 +70,7 @@ public class HackatonApplication implements CommandLineRunner {
 						 + " NB_ECOLE_ELEM  , "
 						 + " POP  , "
 						 + " LATITUDE  , "
-						 + " LONGITUDE , "
-						 + " GEOMETRY  "
+						 + " LONGITUDE  "						
 		+ " FROM CSVREAD('classpath:db/HackDb.csv', NULL, 'charset=UTF-8 fieldSeparator=; writeColumnHeader=false')"
 			+ ")");
 	}

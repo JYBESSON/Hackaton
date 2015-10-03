@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import fr.sodifrance.hackatoncaf.HackatonRestController;
 import fr.sodifrance.hackatoncaf.model.Commune;
+import fr.sodifrance.hackatoncaf.model.CommuneDetail;
 import fr.sodifrance.hackatoncaf.model.Loc;
 
 public abstract class AbstractCommuneFactory<T extends Commune> implements RowMapper<T>, ResultSetExtractor<T> {
@@ -32,32 +33,62 @@ public abstract class AbstractCommuneFactory<T extends Commune> implements RowMa
 		if (!rs.next()) {
 			return null;
 		}
+		
+		
+		
 		String insee = rs.getString(1);
 		String name = rs.getString(2);
 		Double latitude = getDouble(rs, 3);
 		Double longitude = getDouble(rs, 4);
-
 		Double ratio2aFreqCreche = getDouble(rs, 5);
-		Double ratio4aPharm = getDouble(rs, 6);
-		Integer nbEnfant3 = getInteger(rs, 7);
-		Integer nbEnfant36 = getInteger(rs, 8);
-		Integer nbCrechePlaceDispo = getInteger(rs, 9);
-		Integer nbCreche = getInteger(rs, 10);
-
-		Integer nbSage = getInteger(rs, 11);
-		Integer nbPharma = getInteger(rs, 12);
-		Integer nbMaternelle = getInteger(rs, 13);
-		Integer nbElem = getInteger(rs, 14);
-		Integer nbPop = getInteger(rs, 15);
-		//String geometry = rs.getString(16);
-
-		Integer score = 1;
+		Double ratio4aPharm = getDouble(rs, 6);		
+		Double ratio5aMatern = getDouble(rs, 7);
+		Double ratio6sage = getDouble(rs, 8);
+		Double ratio7elem = getDouble(rs, 9);	
+		Integer score =getInteger(rs, 10);
+		Integer nbEnfant3 = getInteger(rs,11);
+		Integer nbEnfant36 = getInteger(rs, 12);
+		Integer nbEnfant6 = getInteger(rs, 13);		
+		Integer nbCrechePlaceDispo = getInteger(rs, 14);
+		Integer nbCreche = getInteger(rs, 15);
+		Integer nbSage = getInteger(rs, 16);
+		Integer nbPharma = getInteger(rs, 17);
+		Integer nbMaternelle = getInteger(rs, 18);
+		Integer nbElem = getInteger(rs, 19);
+		Integer nbPop = getInteger(rs, 20);
+	
+		
+		
 		if (latitude != null && latitude != 0 && longitude != null && longitude != 0 && score != null) {
-			T commune = create(insee, name, ratio2aFreqCreche, ratio4aPharm, nbEnfant3, nbEnfant36, nbCrechePlaceDispo,
-					nbCreche, nbPharma, nbSage, nbMaternelle, nbElem, nbPop, "");
+			
+			CommuneDetail commune = new CommuneDetail();
+			
+		
+			commune.setCode(insee);
+			commune.setInsee(insee);
+			commune.setName(name);
+			
+			commune.setRatio2aFreqCreche(ratio2aFreqCreche);
+			commune.setRatio4aPharm(ratio4aPharm);
+			commune.setRatio5aMatern(ratio5aMatern);
+			commune.setRatio6sage(ratio6sage);
+			commune.setRatio7elem(ratio7elem);
+			
+			commune.setNbEnfant3(nbEnfant3);
+			commune.setNbEnfant36(nbEnfant36);
+			commune.setNbEnfant6(nbEnfant6);
+			commune.setNbCrechePlaceDispo(nbCrechePlaceDispo);
+			commune.setNbCreche(nbCreche);	
+			commune.setNbPharmacie(nbPharma);
+			commune.setNbSage(nbSage);
+			commune.setNbMaternelle(nbMaternelle);
+			commune.setNbElem(nbElem);
+			commune.setNbPop(nbPop);
+				
 			commune.setLoc(new Loc(latitude, longitude));
 			commune.setScore(score);
-			return commune;
+			
+			return (T)commune;
 		}
 		// la commune n'a pas de geolocalisation, on retourne null
 		return null;
@@ -83,8 +114,25 @@ public abstract class AbstractCommuneFactory<T extends Commune> implements RowMa
 		return maxScore;
 	}
 
-	protected abstract T create(String insee, String name, Double ratio2aFreqCreche, Double ratio4aPharm,
-			Integer nbEnfant3, Integer nbEnfant36, Integer nbCrechePlaceDispo, Integer nbCreche, Integer nbPharmacie,
-			Integer nbSage, Integer nbMaternelle, Integer nbElem, Integer nbPop, String geometry);
+	protected abstract T create(String insee ,
+			String name ,
+			Double latitude, 
+			Double longitude,
+			Double ratio2aFreqCreche,
+			Double ratio4aPharm	,
+			Double ratio5aMatern ,
+			Double ratio6sage ,
+			Double ratio7elem,
+			Integer score ,
+			Integer nbEnfant3 ,
+			Integer nbEnfant36 ,
+			Integer nbEnfant6 ,
+			Integer nbCrechePlaceDispo,
+			Integer nbCreche ,
+			Integer nbSage ,
+			Integer nbPharma,
+			Integer nbMaternelle,
+			Integer nbElem,
+			Integer nbPop );
 
 }
